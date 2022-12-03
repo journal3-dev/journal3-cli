@@ -4,10 +4,10 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import { Command } from "commander";
-
 import inquirer from "inquirer";
-
 import axios from "axios";
+import FormData from "form-data";
+import fs from "fs";
 
 const program = new Command();
 
@@ -42,12 +42,25 @@ const LIST_ALL_CREATED_STANDARDS_TEXT = "List all created skill NFTs";
 
 const fetchUserDataFromKaggle = async (username) => {
   console.log(
-    "Imported user's Notebooks, Datasets and Competition history data.."
+    `Imported Kaggle notebooks for ${username}. Uploaded to IPFS.
+     Datasets and Competition history data will be added later.."
+  `
   );
 
-  console.log("Uploading to user's Oracle contract..");
+  const form = new FormData();
+  const file = fs.readFileSync("./notebooks.zip");
+  form.append("file", file, "notebooks.zip");
+  form.append("userAddress", "0x83a1BB0A32B2c03877757a7eD7E9F18C8fbDa7eA");
 
-  console.log("Kaggle data approved! Hurray!");
+  const response = await axios.post(
+    process.env.API_ADDRESS + "/upload-kaggle-notebooks",
+    form,
+    {
+      headers: {
+        ...form.getHeaders(),
+      },
+    }
+  );
 };
 
 const handleKagglePoWSubmission = async () => {
