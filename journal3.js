@@ -288,9 +288,24 @@ const createJobListing = async () => {
     {
       name: "filename",
       type: "input",
-      message: "Enter filename of Job listing spec in YAML:",
+      message: "Enter filename of Job listing spec in JSON:",
     },
   ]);
+
+  const form = new FormData();
+  const file = fs.readFileSync("./job-spec.json");
+  form.append("file", file, "job-spec.json");
+  form.append("userAddress", "0x83a1BB0A32B2c03877757a7eD7E9F18C8fbDa7eA");
+
+  const response = await axios.post(
+    process.env.API_ADDRESS + "/create-job",
+    form,
+    {
+      headers: {
+        ...form.getHeaders(),
+      },
+    }
+  );
 
   console.log(
     `Loaded Job listing spec ${createJobListingInfo.filename}. Job listing created! Publish it by staking on it..`
@@ -494,9 +509,20 @@ const createNFTStandard = async () => {
     message: "Enter filename of NFT Standard spec (JSON):",
   });
 
-  console.log(
-    `Created NFT standard for ${nftStandardInput.filename} at 0x2D4a028B538B7368A142E282a946DA2ac107399a`
+  const form = new FormData();
+  const file = fs.readFileSync("./skill-nft-standard.json");
+  form.append("file", file, "skill-nft-standard.json");
+
+  const response = await axios.post(
+    process.env.API_ADDRESS + "/create-skill",
+    form,
+    {
+      headers: {
+        ...form.getHeaders(),
+      },
+    }
   );
+  console.log(`Created NFT standard for ${nftStandardInput.filename}!`);
 };
 
 const withdrawRoyaltiesOnNFTs = async () => {
