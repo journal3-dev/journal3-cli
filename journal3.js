@@ -177,9 +177,13 @@ const handleJobApplication = async () => {
 
   console.log();
 
-  console.log(
-    `Congratulations, you have passed the job criteria by the organisation!`
-  );
+  var data = JSON.stringify({
+    jobId: jobApplicationId.id,
+  });
+
+  const response = await axios.post(process.env.API_ADDRESS + "/apply-job", {
+    data: data,
+  });
 };
 
 const handleScientist = async () => {
